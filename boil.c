@@ -3,24 +3,29 @@
  * (font, colors), write output to a file, error handling, override existing 
  * dir if needed, templates. 
  */
+#define _GNU_SOURCE 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #define MAX_LEN 40
 
 int main() {
-	char title[MAX_LEN], new_title[MAX_LEN];
-	int i, li_tags, type, c_theme, format;
+	char buffer[MAX_LEN], new_title[MAX_LEN];
+	char *title;
+	int i = 0, li_tags = 0, type = 0, c_theme = 0, format = 0;
 
 	printf("------------------------------------------------------\n");
 	printf("Welcome to boil, a command line static site generator!\n");
-	printf("Enter a title (Max length 40): ");
-	fgets(title, MAX_LEN, stdin);
 
-	strncpy(new_title, title, strlen(title) - 1); /* Bug? */
-	memset(new_title + strlen(title), 0, MAX_LEN - strlen(title));
+	printf("Enter a title (Max length is 40): ");
+	fgets(buffer, MAX_LEN, stdin);
+  asprintf(&title, "%s", buffer);
+
+	memset(new_title, 0, MAX_LEN);
+	strncpy(new_title, title, strlen(title) - 1);
 
 	while (type != 1 && type != 2 && type != 3) {
-		printf("Enter the number of the type of site you want (Blog - 1) (Portfolio - 2) (Course - 3): ");
+		printf("Enter the number of your site type (Blog - 1) (Portfolio - 2) (Course - 3): ");
 		scanf("%d", &type);
 	}
 
@@ -31,15 +36,20 @@ int main() {
 	 * Pumpkin is #B36815, #AFB315, #60B315.
 	 * Forest is #15B32A, #15B379, #159EB3.
 	 */
-	printf("Enter the number of the color theme you want (Default - 1) (Sky - 2) (Lava - 3) (Pumpkin - 4) (Forest - 5): ");
-	scanf("%d", &c_theme);
+	while (c_theme != 1 && c_theme != 2 && c_theme != 3 && c_theme != 4 && c_theme != 5) {
+		printf("Enter the number of your color theme (Default - 1) (Sky - 2) (Lava - 3) (Pumpkin - 4) (Forest - 5): ");
+		scanf("%d", &c_theme);
+	}
 
 	/*
-	 * Default has the menu horizontally near the top, Antimenu has the menu 
-	 * elements distributed on the page, Sidemenu has the menu on the left side.
+	 * Default has the menu horizontally near the top.
+	 * Sidemenu has the menu on the left side. No menu has the menu 
+	 * elements distributed on the page, 
 	 */
-	printf("Enter the number of the formatting you want (Default - 1) (No menu - 2) (Sidemenu - 3): ");
-	scanf("%d", &format);
+	while (format != 1 && format != 2 && format != 3) {
+		printf("Enter the number of your formatting (Default - 1) (Sidemenu - 2) (No menu - 3): ");
+		scanf("%d", &format);
+	}
 
 	if (c_theme == 1) {
 
@@ -77,5 +87,6 @@ int main() {
 
 	printf("</body>\n</html>\n");
 
+	free(title);
 	return 0;
 }
