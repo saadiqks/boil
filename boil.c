@@ -19,7 +19,7 @@ int main() {
 
 	printf("Enter a title (Max length is 40): ");
 	fgets(buffer, MAX_LEN, stdin);
-  asprintf(&title, "%s", buffer);
+        asprintf(&title, "%s", buffer);
 
 	memset(new_title, 0, MAX_LEN);
 	strncpy(new_title, title, strlen(title) - 1);
