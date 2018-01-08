@@ -1,13 +1,11 @@
-/*
- * To add: create a directory named by user, default site option, specify css
- * (font, colors), write output to a file, error handling, override existing 
- * dir if needed, templates. 
- */
 #define _GNU_SOURCE 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #define MAX_LEN 1024
 
 int main() {
@@ -15,7 +13,8 @@ int main() {
 	char *title, *c_type, *c_theme, *c_format;
 	const char *html_c, *nav_c, *div_c, *padding, *nav_f, *nav_li, *div_f;
 	int type = 0, theme = 0, format = 0;	
-	FILE *css;
+	struct stat st = {0};
+	FILE *css, *blog, *archive, *about, *port, *proj, *course, *syll, *sched, *res;	
 
 	printf("------------------------------------------------------\n");
 	printf("Welcome to boil, a command line static site generator!\n");
@@ -25,7 +24,29 @@ int main() {
   	asprintf(&title, "%s", buffer);
 
 	memset(new_title, 0, MAX_LEN);
-	strncpy(new_title, title, strlen(title) - 1);
+	strncpy(new_title, title, strlen(title) - 1);	
+
+	if (stat("site", &st) == -1) {
+    mkdir("site", 0700);
+	} else {
+		remove("site/theme");
+
+		if (access("site/blog.html", F_OK) != -1) {
+			remove("site/blog.html");
+			remove("site/archive.html");
+			remove("site/about.html");
+		} else if (access("site/port.html", F_OK) != -1) {
+			remove("site/port.html");
+			remove("site/proj.html");
+		} else {
+			remove("site/course.html");
+			remove("site/syll.html");
+			remove("site/sched.html");
+			remove("site/res.html");
+		}
+
+		rmdir("site");				
+	}
 
 	while (type != 1 && type != 2 && type != 3) {
 		printf("Enter the number of your site type (Blog - 1) (Portfolio - 2) (Course - 3): ");
@@ -54,11 +75,49 @@ int main() {
 	}
 
 	if (type == 1) {
+		blog = fopen("site/blog.html", "w");
+		fprintf(blog, "<!-- Blog. -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>%s</title>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme.css\">\n  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n</head>\n<body>\n  <h1>%s</h1>\n", new_title, new_title);
+		fprintf(blog, "  <ul id=\"nav\">\n   <li id=\"nav-li\"><a href=\"blog.html\">Home</a></li>\n   <li id=\"nav-li\"><a href =\"archive.html\">Archive</a></li>\n   <li id=\"nav-li\"><a href =\"about.html\">About</a></li>\n  </ul>\n  <div>\n  \t<h3>January 1</h3>\n  \t<p>My first post.</p>\n  </div>\n</body>\n</html>\n");
+		fclose(blog);		
 
+		archive = fopen("site/archive.html", "w");
+		fprintf(archive, "<!-- Archive. -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>%s</title>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme.css\">\n  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n</head>\n<body>\n\t<h1>%s</h1>\n", new_title, new_title);
+		fprintf(archive, "  <ul id=\"nav\">\n   <li id=\"nav-li\"><a href =\"blog.html\">Home</a></li>\n   <li id=\"nav-li\"><a href =\"archive.html\">Archive</a></li>\n   <li id=\"nav-li\"><a href =\"about.html\">About</a></li>\n  </ul>\n  <div>\n  \t<ul>\n      <l1>Previous Post 1</l1>\n      <li>Previous Post 2</li>\n    </ul>\n  <div>\n</body>\n</html>\n");
+		fclose(archive);
+
+		about = fopen("site/about.html", "w");
+		fprintf(about, "<!-- About. -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>%s</title>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme.css\">\n  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n</head>\n<body>\n\t<h1>%s</h1>\n", new_title, new_title);
+		fprintf(about, "  <ul id=\"nav\">\n   <li id=\"nav-li\"><a href=\"blog.html\">Home</a></li>\n   <li id=\"nav-li\"><a href=\"archive.html\">Archive</a></li>\n   <li id=\"nav-li\"><a href=\"about.html\">About</a></li>\n  </ul>\n  <div>\n  \t<p>My description.</p>\n  <div>\n</body>\n</html>");
+		fclose(about);		
 	} else if (type == 2) {
-		
+		port = fopen("site/port.html", "w");
+		fprintf(port, "<!-- Portfolio. -->\n<!DOCTYPE html>\n<head>\n  <title>%s</title>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme.css\">\n  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n</head>\n<body>\n\t<h1>%s</h1>\n  ", new_title, new_title);
+		fprintf(port, "<ul id=\"nav\">\n   <li id=\"nav-li\"><a href=\"port.html\">Home</a></li>\n   <li id=\"nav-li\"><a href=\"proj.html\">Projects</a></li>\n   <li id=\"nav-li\">Resume</li> <!-- Link to PDF. -->\n   <li id=\"nav-li\">CV</li> <!-- Link to PDF. -->\n  </ul>\n  <div>\n    <h3>About Me</h3>\n    <p>My description.</p>\n  </div>\n</body>\n</html>");
+		fclose(port); 	
+
+		proj = fopen("site/proj.html", "w");
+		fprintf(proj, "<!-- Portfolio. -->\n<!DOCTYPE html>\n<head>\n  <title>%s</title>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme.css\">\n  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n</head>\n<body>\n\t<h1>%s</h1>\n  ", new_title, new_title);
+		fprintf(proj, "<ul id=\"nav\">\n   <li id=\"nav-li\"><a href=\"port.html\">Home</a></li>\n   <li id=\"nav-li\"><a href=\"proj.html\">Projects</a></li>\n   <li id=\"nav-li\">Resume</li> <!-- Link to PDF. -->\n   <li id=\"nav-li\">CV</li> <!-- Link to PDF. -->\n  </ul>\n  <div>\n    <h3>Project 1</h3>\n    <p>My description.</p>\n    <h3>Project 2</h3>\n    <p>My description.</p>\n  </div>\n</body>\n</html>");
 	} else if (type == 3) {
-		
+		course = fopen("site/course.html", "w");
+		fprintf(course, "<!-- Course -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>%s</title>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme.css\">\n  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n</head>\n<body>\n  <h1>%s</h1>\n", new_title, new_title);
+		fprintf(course, "  <ul id=\"nav\">\n   <li id=\"nav-li\"><a href=\"course.html\">Home</a></li>\n   <li id=\"nav-li\"><a href=\"syll.html\">Syllabus</a></li>\n   <li id=\"nav-li\"><a href=\"sched.html\">Schedule</a></li>\n   <li id=\"nav-li\"><a href=\"res.html\">Resources</a></li>\n  </ul>\n  <div>\n  \t<h3>Description</h3>\n  \t<p>My description.</p>\n  </div>\n</body>\n</html>");
+		fclose(course);
+
+		syll= fopen("site/syll.html", "w"); 
+		fprintf(syll, "<!-- Syllabus -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>%s</title>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"theme.css\">\n  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n</head>\n<body>\n  <h1>%s</h1>\n", new_title, new_title);
+		fprintf(syll, "  <ul id=\"nav\">\n   <li id=\"nav-li\"><a href=\"course.html\">Home</a></li>\n   <li id=\"nav-li\"><a href=\"syll.html\">Syllabus</a></li>\n   <li id=\"nav-li\"><a href=\"sched.html\">Schedule</a></li>\n   <li id=\"nav-li\"><a href=\"res.html\">Resources</a></li>\n  </ul>\n  <div>\n  \t<h3>Instructor</h3>\n  \t<h3>Topics</h3>\n    <h3>Grading</h3>\n    <h3>Policies</h3>\n  </div>\n</body>\n</html>");
+		fclose(syll);
+
+		sched = fopen("site/sched.html", "w");
+		fprintf(sched, "<!-- Schedule -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>%s</title>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"site/theme.css\">\n  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n</head>\n<body>\n  <h1>%s</h1>\n", new_title, new_title);
+		fprintf(sched, "  <ul id=\"nav\">\n   <li id=\"nav-li\"><a href=\"course.html\">Home</a></li>\n   <li id=\"nav-li\"><a href=\"syll.html\">Syllabus</a></li>\n   <li id=\"nav-li\"><a href=\"sched.html\">Schedule</a></li>\n   <li id=\"nav-li\"><a href=\"res.html\">Resources</a></li>\n  </ul>\n  <div>\n    <h3>Tentative Schedule</h3>\n    <table>\n    <tr>\n      <th>Date</th>\n      <th>Topic</th>\n    </tr>\n    <tr>\n      <td>Date 1</td>\n      <td>Topic 1</td>\n    </tr>\n    </table>\n  </br>\n  </div>\n</body>\n</html>");
+		fclose(sched);
+
+		res = fopen("site/res.html", "w");
+		fprintf(res, "<!-- Resources -->\n<!DOCTYPE html>\n<html>\n<head>\n  <title>%s</title>\n  <link rel=\"stylesheet\" type=\"text/css\" href=\"site/theme.css\">\n  <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">\n</head>\n<body>\n  <h1>%s</h1>\n", new_title, new_title);
+		fprintf(res, "  <ul id=\"nav\">\n   <li id=\"nav-li\"><a href=\"course.html\">Home</a></li>\n   <li id=\"nav-li\"><a href=\"syll.html\">Syllabus</a></li>\n   <li id=\"nav-li\"><a href=\"sched.html\">Schedule</a></li>\n   <li id=\"nav-li\"><a href=\"res.html\">Resources</a></li>\n  </ul>\n  <div>\n  \t<p>Course resources.</p>\n  </div>\n</body>\n</html>");
+		fclose(res);		
 	}
 
 	if (theme == 1) {
@@ -95,21 +154,12 @@ int main() {
 		div_f = "\n\tfloat: right;\n  width: 80%;\n";
 	}
 
-	printf("Your markup:\n<!-- This was generated by boil. -->\n");
-	printf("<!DOCTYPE html>\n<head>\n  <title>%s</title>\n</head>\n<body>\n", new_title);
+	printf("Your site has been generated in the directory \"site\".\n");		
 
-	printf("  <p></p>\n");
-
-	printf("</body>\n</html>\n");
-
-	system("mkdir site"); 
-
-	css = fopen("theme.css", "w");
+	css = fopen("site/theme.css", "w");
 	fprintf(css,"/* Default options for color and menu. */\nhtml {\n  font-family: 'Open Sans', sans-serif;\n  margin: 2%%;\n  background-color: %s; \n}\n\nul {\n  list-style-type: none;\n}\n\n#nav { \n  padding: %s; \n  margin: 0;\n  overflow: hidden;\n  background-color: %s; \n  text-align: center;\n  font-size: 18px;\n  %s\n}\n\n#nav-li {\n  display: %s \n}\n\nli a {\n  text-decoration: none;\n  padding: 5px;  \n}\n\n", html_c, padding, nav_c, nav_f, nav_li);
 	fprintf(css,"li a:visited {\n  color: black;\n}\n\nli a:hover {\n  color: white;\n}\n\ndiv {\n  background-color: %s;\n  padding-left: 10px;\n  padding-top: 2px;\n  padding-bottom: 2px;\n  font-size: 20px;%s\n}\n\ntable {\n  border-collapse: collapse;\n  width: 90%%;\n  margin-left: auto;\n  margin-right: auto;\n  float: none;\n}\n\nth {\n  background: gray;\n}\n\ntd {\n  background: white;\n}\n\ntd, th {\n  border: 1px solid #000000;\n  text-align: left;\n  padding: 8px;\n}", div_c, div_f); 
 	fclose(css);
-
-	system("mv theme.css site");
 
 	free(title);
 	free(c_type);
