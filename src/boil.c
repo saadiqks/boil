@@ -238,8 +238,21 @@ int main() {
 	printf("Your site has been generated in the directory \"site\".\n");		
 
 	css = fopen("site/theme.css", "w");
-	fprintf(css,"/* Default options for color and menu. */\nhtml {\n  font-family: 'Open Sans', sans-serif;\n  margin: 2%%;\n  background-color: %s; \n}\n\nul {\n  list-style-type: none;\n}\n\n#nav { \n  padding: %s; \n  margin: 0;\n  overflow: hidden;\n  background-color: %s; \n  text-align: center;\n  font-size: 18px;\n  %s\n}\n\n#nav-li {\n  display: %s \n}\n\nli a {\n  text-decoration: none;\n  padding: 5px;  \n}\n\n", html_c, padding, nav_c, nav_f, nav_li);
-	fprintf(css,"li a:visited {\n  color: black;\n}\n\nli a:hover {\n  color: white;\n}\n\ndiv {\n  background-color: %s;\n  padding-left: 10px;\n  padding-top: 2px;\n  padding-bottom: 2px;\n  font-size: 20px;%s\n}\n\ntable {\n  border-collapse: collapse;\n  width: 90%%;\n  margin-left: auto;\n  margin-right: auto;\n  float: none;\n}\n\nth {\n  background: gray;\n}\n\ntd {\n  background: white;\n}\n\ntd, th {\n  border: 1px solid #000000;\n  text-align: left;\n  padding: 8px;\n}", div_c, div_f); 
+	fprintf(css,"/* Default options for color and menu. */\nhtml {\n  font-family");
+	fprintf(css,": 'Open Sans', sans-serif;\n  margin: 2%%;\n  background-color: ");
+	fprintf(css, "%s; \n}\n\nul {\n  list-style-type: none;\n}\n\n#nav { \n  padd", html_c);
+	fprintf(css, "ing: %s; \n  margin: 0;\n  overflow: hidden;\n  background-colo", padding);
+	fprintf(css, "r: %s; \n  text-align: center;\n  font-size: 18px;\n  %s\n}\n\n", nav_c, nav_f);
+	fprintf(css, "#nav-li {\n  display: %s \n}\n\nli a {\n  text-decoration: none", nav_li);
+	fprintf(css, ";\n  padding: 5px;  \n}\n\n");
+	fprintf(css,"li a:visited {\n  color: black;\n}\n\nli a:hover {\n  color: whi");
+	fprintf(css, "te;\n}\n\ndiv {\n  background-color: %s;\n  padding-left: 10px;", div_c);
+	fprintf(css, "\n  padding-top: 2px;\n  padding-bottom: 2px;\n  font-size: 20p");
+	fprintf(css, "x;%s\n}\n\ntable {\n  border-collapse: collapse;\n  width: 90%%", div_f);
+	fprintf(css,";\n  margin-left: auto;\n  margin-right: auto;\n  float: none;\n");
+  fprintf(css, "}\n\nth {\n  background: gray;\n}\n\ntd {\n  background: white;");
+  fprintf(css, "\n}\n\ntd, th {\n  border: 1px solid #000000;\n  text-align: le");
+  fprintf(css, "ft;\n  padding: 8px;\n}"); 
 	fclose(css);
 
 	free(title);
