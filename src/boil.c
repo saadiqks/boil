@@ -27,7 +27,7 @@ int main() {
 	strncpy(new_title, title, strlen(title) - 1);	
 
 	if (stat("site", &st) == -1) {
-    mkdir("site", 0700);
+    		mkdir("site", 0700);
 	} else {
 		remove("site/theme");
 
@@ -50,24 +50,21 @@ int main() {
 
 	while (type != 1 && type != 2 && type != 3) {
 		printf("Enter the number of your site type (Blog - 1) (Portfolio - 2) (Course - 3): ");
-		if (fgets(buffer, MAX_LEN, stdin))
-  		asprintf(&c_type, "%s", buffer);
-  	type = atoi(c_type);
+		if (fgets(buffer, MAX_LEN, stdin)) asprintf(&c_type, "%s", buffer);
+  		type = atoi(c_type);
 	}
 
 	while (theme != 1 && theme != 2 && theme != 3 && theme != 4 && theme != 5) {
 		printf("Enter the number of your color theme (Default - 1) (Sky - 2) (Lava"); 
 		printf("- 3) (Pumpkin - 4) (Forest - 5): ");
-		if (fgets(buffer, MAX_LEN, stdin))
-  		asprintf(&c_theme, "%s", buffer);
-  	theme = atoi(c_theme);
+		if (fgets(buffer, MAX_LEN, stdin)) asprintf(&c_theme, "%s", buffer);
+  		theme = atoi(c_theme);
 	}
 
 	while (format != 1 && format != 2) {
 		printf("Enter the number of your formatting (Default - 1) (Sidemenu - 2): ");
-		if (fgets(buffer, MAX_LEN, stdin))
-  		asprintf(&c_format, "%s", buffer);
-  	format = atoi(c_format);
+		if (fgets(buffer, MAX_LEN, stdin)) asprintf(&c_format, "%s", buffer);
+  		format = atoi(c_format);
 	}
 
 	if (type == 1) {
@@ -250,9 +247,9 @@ int main() {
 	fprintf(css, "\n  padding-top: 2px;\n  padding-bottom: 2px;\n  font-size: 20p");
 	fprintf(css, "x;%s\n}\n\ntable {\n  border-collapse: collapse;\n  width: 90%%", div_f);
 	fprintf(css,";\n  margin-left: auto;\n  margin-right: auto;\n  float: none;\n");
-  fprintf(css, "}\n\nth {\n  background: gray;\n}\n\ntd {\n  background: white;");
-  fprintf(css, "\n}\n\ntd, th {\n  border: 1px solid #000000;\n  text-align: le");
-  fprintf(css, "ft;\n  padding: 8px;\n}"); 
+  	fprintf(css, "}\n\nth {\n  background: gray;\n}\n\ntd {\n  background: white;");
+  	fprintf(css, "\n}\n\ntd, th {\n  border: 1px solid #000000;\n  text-align: le");
+  	fprintf(css, "ft;\n  padding: 8px;\n}"); 
 	fclose(css);
 
 	free(title);
